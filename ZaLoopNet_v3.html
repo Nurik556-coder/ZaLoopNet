@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page Title</title>
+        <meta charset="UTF-8">
+           <style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f0ff;
+    color: #222;
+  }
+
+  /* Splash screen */
+  #splash-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s;
+    z-index: 9999;
+  }
+  .logo-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, #d3bfff, #a66bff);
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .logo-arrow {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #333;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    animation: spin 2s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg) translateX(30px); }
+    100% { transform: rotate(360deg) translateX(30px); }
+  }
+  .logo-eyes {
+    display: none;
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .logo-eyes span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #000;
+    margin: 0 5px;
+  }
+  .logo-mouth {
+    display: none;
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    width: 40px;
+    height: 20px;
+    background: transparent;
+    border-bottom: 4px solid #000;
+    border-radius: 0 0 20px 20px;
+    transform: translateX(-50%);
+  }
+  #logo-text {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #6e36ff;
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s;
+  }
+  #logo-slogan {
+    font-size: 1rem;
+    color: #777;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s;
+  }
+  #enter-button {
+    margin-top: 30px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #a66bff, #7e5fff);
+    color: white;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  #enter-button:hover {
+    transform: translateY(18px);
+    opacity: 0.9;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  /* Основные секции */
+  .section {
+    display: none;
+    padding: 20px;
+  }
+
+  textarea, input[type="text"], input[type="password"] {
+    width: 90%;
+    max-width: 400px;
+    margin: 10px auto;
+    display: block;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 1rem;
+  }
+
+  button {
+    padding: 10px 20px;
+    margin: 10px auto;
+    display: block;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #a66bff, #7e5fff);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  button:hover {
+    transform: scale(1.05);
+  }
+
+  .post {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  }
+
+  /* Футер */
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    z-index: 999;
+  }
+
+  .footer button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #6e36ff;
+  }
+
+  /* Темный режим */
+  body.dark {
+    background-color: #1e1e2f;
+    color: #f0f0f0;
+  }
+  body.dark .post {
+    background-color: #2c2c3c;
+    color: #fff;
+  }
+  body.dark .footer {
+    background-color: #1e1e2f;
+    border-color: #444;
+  }
+
+  /* Слайдер переключения темы */
+  .switch-wrapper {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 10000;
+  }
+
+  .switch-wrapper input[type="checkbox"] {
+    visibility: hidden;
+    display: none;
+  }
+
+  .switch-wrapper .switch {
+    --width-of-switch: 3.5em;
+    --height-of-switch: 2em;
+    --size-of-icon: 1.4em;
+    --slider-offset: 0.3em;
+    position: relative;
+    width: var(--width-of-switch);
+    height: var(--height-of-switch);
+    display: inline-block;
+  }
+
+  .switch-wrapper .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #f4f4f5;
+    transition: .4s;
+    border-radius: 30px;
+  }
+
+  .switch-wrapper .slider:before {
+    position: absolute;
+    content: "";
+    height: var(--size-of-icon,1.4em);
+    width: var(--size-of-icon,1.4em);
+    border-radius: 20px;
+    left: var(--slider-offset,0.3em);
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(40deg,#ff6761,#ff9894 70%);
+    transition: .4s;
+  }
+
+  .switch-wrapper input:checked + .slider {
+    background-color: #303136;
+  }
+
+  .switch-wrapper input:checked + .slider:before {
+    left: calc(100% - (var(--size-of-icon,1.4em) + var(--slider-offset,0.3em)));
+    background: #303136;
+    box-shadow: inset -3px -2px 5px -2px #474bff, inset -10px -4px 0 0 #7a7dff;
+  }
+</style> 
+        
+    </head>
+    <body>
+  <!-- Переключатель темы -->
+  <div class="switch-wrapper">
+    <label class="switch">
+      <input type="checkbox" id="theme-switch">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <!-- Заставка ZaLoopNet -->
+  <div id="splash-screen">
+    <div class="logo-circle" id="logo-circle">
+      <div class="logo-arrow" id="logo-arrow"></div>
+      <div class="logo-eyes" id="logo-eyes">
+        <span></span><span></span>
+      </div>
+      <div class="logo-mouth" id="logo-mouth"></div>
+    </div>
+    <div id="logo-text">ZaLoopNet</div>
+    <div id="logo-slogan">Своя сеть — свои правила</div>
+    <button id="enter-button" onclick="enterApp()">Войти</button>
+  </div>
+
+  <!-- Страница регистрации / входа -->
+  <div id="register-page" class="section">
+    <h2>Регистрация</h2>
+    <input type="text" id="reg-username" placeholder="Имя пользователя">
+    <input type="password" id="reg-password" placeholder="Пароль">
+    <button onclick="register()">Зарегистрироваться</button>
+    <h2>Вход</h2>
+    <input type="text" id="login-username" placeholder="Имя пользователя">
+    <input type="password" id="login-password" placeholder="Пароль">
+    <button onclick="login()">Войти</button>
+  </div>
+
+  <!-- Главная страница -->
+  <div id="main" class="section">
+    <h2>Лента</h2>
+    <textarea id="post-content" placeholder="Что у вас нового?"></textarea>
+    <button onclick="createPost()">Опубликовать</button>
+    <div id="posts"></div>
+  </div>
+
+  <!-- Профиль -->
+  <div id="profile-page" class="section">
+    <h2>Профиль</h2>
+    <p id="profile-username"></p>
+    <button onclick="logout()">Выйти</button>
+  </div>
+
+  <!-- Чаты -->
+  <div id="chat-page" class="section">
+    <h2>Чаты</h2>
+    <div id="chat-content"></div>
+    <input id="chat-input" placeholder="Сообщение">
+    <button onclick="sendMessage()">Отправить</button>
+  </div>
+
+  <!-- Группы -->
+  <div id="group-page" class="section">
+    <h2>Группы</h2>
+    <p>Здесь будут сообщества</p>
+  </div>
+
+  <!-- Футер навигации -->
+  <div class="footer">
+    <button onclick="showPage('main')">🏠</button>
+    <button onclick="showPage('profile-page')">👤</button>
+    <button onclick="showPage('chat-page')">💬</button>
+    <button onclick="showPage('group-page')">👥</button>
+  </div>
+        
+        <script>
+  // ===== Splash Animation =====
+  document.addEventListener("DOMContentLoaded", () => {
+    const arrow = document.getElementById("logo-arrow");
+    const circle = document.getElementById("logo-circle");
+    const eyes = document.getElementById("logo-eyes");
+    const mouth = document.getElementById("logo-mouth");
+    const text = document.getElementById("logo-text");
+    const slogan = document.getElementById("logo-slogan");
+    const button = document.getElementById("enter-button");
+
+    setTimeout(() => {
+      eyes.style.display = "block";
+      mouth.style.display = "block";
+      circle.style.animation = "shake 0.5s";
+      circle.style.animationIterationCount = 1;
+    }, 2000);
+
+    setTimeout(() => {
+      text.style.opacity = 1;
+      text.style.transform = "translateY(0)";
+    }, 2700);
+
+    setTimeout(() => {
+      slogan.style.opacity = 1;
+      slogan.style.transform = "translateY(0)";
+    }, 3200);
+
+    setTimeout(() => {
+      button.style.opacity = 1;
+      button.style.transform = "translateY(0)";
+    }, 3700);
+  });
+
+  // ===== Theme Switcher =====
+  const themeSwitch = document.getElementById("theme-switch");
+
+  // Устанавливаем тему при загрузке, если сохранена
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+    themeSwitch.checked = true;
+  }
+
+  themeSwitch.addEventListener("change", () => {
+    if (themeSwitch.checked) {
+      document.body.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.body.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  });
+
+  // ===== Enter App =====
+  function enterApp() {
+    document.getElementById("splash-screen").style.opacity = 0;
+    setTimeout(() => {
+      document.getElementById("splash-screen").style.display = "none";
+      showPage("register-page");
+    }, 600);
+  }
+
+  // ===== Register & Login =====
+  function register() {
+    const username = document.getElementById("reg-username").value;
+    const password = document.getElementById("reg-password").value;
+    if (username && password) {
+      localStorage.setItem(`user_${username}`, password);
+      alert("Регистрация успешна!");
+    }
+  }
+
+  function login() {
+    const username = document.getElementById("login-username").value;
+    const password = document.getElementById("login-password").value;
+    const stored = localStorage.getItem(`user_${username}`);
+    if (stored === password) {
+      localStorage.setItem("loggedInUser", username);
+      document.getElementById("profile-username").textContent = username;
+      showPage("main");
+    } else {
+      alert("Неверный логин или пароль");
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem("loggedInUser");
+    showPage("register-page");
+  }
+
+  // ===== Navigation Pages =====
+  function showPage(id) {
+    document.querySelectorAll(".section").forEach(div => {
+      div.style.display = "none";
+    });
+    document.getElementById(id).style.display = "block";
+  }
+
+  // ===== Posts =====
+  function createPost() {
+    const content = document.getElementById("post-content").value;
+    if (content) {
+      const post = document.createElement("div");
+      post.className = "post";
+      post.innerHTML = `<p>${content}</p>
+        <button onclick="this.parentElement.remove()">Удалить</button>`;
+      document.getElementById("posts").prepend(post);
+      document.getElementById("post-content").value = "";
+    }
+  }
+
+  // ===== Chat =====
+  function sendMessage() {
+    const input = document.getElementById("chat-input");
+    const content = input.value.trim();
+    if (content) {
+      const msg = document.createElement("div");
+      msg.className = "chat-msg";
+      msg.textContent = content;
+      document.getElementById("chat-content").appendChild(msg);
+      input.value = "";
+    }
+  }
+
+  // ===== Init: Restore last user session =====
+  const user = localStorage.getItem("loggedInUser");
+  if (user) {
+    document.getElementById("profile-username").textContent = user;
+    showPage("main");
+  } else {
+    showPage("register-page");
+  }
+</script>
+    </body>
+</html>
